@@ -267,20 +267,27 @@ send_message(Socket, Tokens) ->
 		    %% Tag SEND Number Message
 		    send_reply(Socket, Tag, "BAD");
 	       true ->
-		    %% Find info of this message and insert in database
-		    Sender = User#session.user,
 		    Recvr = lists:nth(3, Tokens),
-		    Message = string:join(lists:nthtail(3, Tokens), " "),
-		    MessageId = generate_message_id(),
-		    Pattern = #message{id=MessageId,
-				       from=Sender,
-				       to=Recvr,
-				       time=calendar:datetime_to_gregorian_seconds(calendar:universal_time()),
-				       data=Message},
-		    mnesia:transaction(fun() ->
-					       mnesia:dirty_write(Pattern)
-				       end),
-		    send_reply(Socket, Tag, "OK")
+		    %% Send message only when receiver's number has 10 digits
+		    case string:len(Recvr) of
+			10 ->
+			    %% Find info of this message and insert in database
+			    Sender = User#session.user,
+			    Message = string:join(lists:nthtail(3, Tokens), " "),
+			    MessageId = generate_message_id(),
+			    Pattern = #message{id=MessageId,
+					       from=Sender,
+					       to=Recvr,
+					       time=calendar:datetime_to_gregorian_seconds(calendar:universal_time()),
+					       data=Message},
+			    mnesia:transaction(fun() ->
+						       mnesia:dirty_write(Pattern)
+					       end),
+			    send_reply(Socket, Tag, "OK");
+			_ ->
+			    %% Length of receiver's number is not 10
+			    send_reply(Socket, Tag, "BAD")
+		    end
 	    end
     end.
 
@@ -499,14 +506,14 @@ convert_date_from_erlang_format(ErlangDateTime) ->
 			     
 %%--------------------------------------------------------------------
 %% @doc  This method prepares the messages in the specified format
-%%       ID: id\r\nFrom:from\r\nTo:to\r\nDate:date\r\nMessage:message
+%%       ID:id\r\nFrom:from\r\nTo:to\r\nDate:date\r\nMessage:message
 %% @spec  prepare_message(ID::integer(), From::string(), To::string(),
 %%        Time::seconds(), Msg::string()) -> Message
 %%        Message = string()
 %% @end
 %%--------------------------------------------------------------------
 prepare_message(ID, From, To, Time, Msg) ->
-    ID1 = "ID: " ++ integer_to_list(ID),
+    ID1 = "ID:" ++ integer_to_list(ID),
     From1 = "From:" ++ From,
     To1 = "To:" ++ To,
     Time1 = "Date:" ++ convert_date_from_erlang_format(calendar:gregorian_seconds_to_datetime(Time)),
