@@ -1,12 +1,11 @@
 %%%-------------------------------------------------------------------
-%%% @author  <Abhay@ABHAY-PC>
-%%% @copyright (C) 2012, 
-%%% @doc
-%%%
+%%% @author  Abhay Jain <abhay_1303@yahoo.co.in>
+%%% @doc This module is a test client module which contains some
+%%%      arbitrary commands to test on tcp_server.erl module
 %%% @end
-%%% Created : 10 Nov 2012 by  <Abhay@ABHAY-PC>
+%%% Created : 10 Nov 2012 by  Abhay Jain
 %%%-------------------------------------------------------------------
--module(tcp_client).
+-module(test_client).
 
 %% API
 -export([
