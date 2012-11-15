@@ -1,12 +1,33 @@
 Simple-Messaging-Server
 =======================
 
-This is a simple TCP messaging server.
+This is a simple TCP messaging server which handles registration, authentication and message sending from clients.
 
-How to run Server
-==========
-call tcp_server:start_server() from erlang shell which will start the TCP server.
+Commands
+--------
+ - *tag* **REGISTER** <number> <password> <name>
+ - *tag* **AUTH** <number> <password>
+ - *tag* **SELECT** <folder> (here folder can be INBOX or SENT)
+ - *tag* **FETCH**
+ - *tag* **FETCH AFTER DATE** <date>
+ - *tag* **FETCH AFTER ID** <id>
+ - *tag* **SEND** <number> <message>
+ - *tag* **BYE**
+
+How to start server
+-------------
+call following command from erlang shell to start the TCP server.  
+
+```erlang
+tcp_server:start_server().
+```
 
 How to run test client
-======================
-call test_client:start() from erlang shell after starting the TCP server. This will start sample client module filled with few commands. The output of each command will be visible on shell.
+-------------------
+call following command from erlang shell after starting the TCP server.  
+
+```erlang
+test_client:start().
+```
+
+This will start sample client module filled with few commands. The output of each command will be visible on shell.
