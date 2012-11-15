@@ -75,10 +75,16 @@ accept_connection(Socket) ->
 %%--------------------------------------------------------------------
 receive_data(Socket) ->
     case gen_tcp:recv(Socket, 0) of
-        {ok, Data} ->
+        {ok, RawData} ->
+	    Data = trim_data(RawData),
 	    io:format("Received data ~p on socket ~p~n", [Data, Socket]),
 	    Tokens = string:tokens(Data, " "),
-	    if length(Tokens) < 2 ->
+	    
+	    if length(Tokens) == 0 ->
+		    %% Data is empty, and has no tag
+		    %% Send error with "*" tag
+		    sessions_manager:send_reply(Socket, "*", "BAD");
+	       length(Tokens) < 2 ->
 		    %% Data from client should have atleast two words
 		    %% Every data should atleast have a tag and a command
 		    sessions_manager:send_reply(Socket, lists:nth(1, Tokens), "BAD");
@@ -107,3 +113,8 @@ receive_data(Socket) ->
         {error, closed} ->
             ok
     end.
+
+trim_data(RawData) ->
+    %% Strip carriage-return from Raw Data
+    Data1 = string:strip(RawData, both, $\n),
+    string:strip(Data1, both, $\r).
