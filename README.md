@@ -5,13 +5,13 @@ This is a simple TCP messaging server which handles registration, authentication
 
 Commands
 --------
- - *tag* **REGISTER** <number> <password> <name>
- - *tag* **AUTH** <number> <password>
- - *tag* **SELECT** <folder> (here folder can be INBOX or SENT)
+ - *tag* **REGISTER** {number} {password} {name}
+ - *tag* **AUTH** {number} {password}
+ - *tag* **SELECT** {folder} (here folder can be INBOX or SENT)
  - *tag* **FETCH**
- - *tag* **FETCH AFTER DATE** <date>
- - *tag* **FETCH AFTER ID** <id>
- - *tag* **SEND** <number> <message>
+ - *tag* **FETCH AFTER DATE** {date}
+ - *tag* **FETCH AFTER ID** {id}
+ - *tag* **SEND** {number} {message}
  - *tag* **BYE**
 
 How to start server
